@@ -41,12 +41,14 @@ import javax.media.j3d.BranchGroup;
 import javax.media.j3d.Canvas3D;
 import javax.media.j3d.ColorInterpolator;
 import javax.media.j3d.ColoringAttributes;
+import javax.media.j3d.DirectionalLight;
 import javax.media.j3d.Material;
 import javax.media.j3d.Node;
 import javax.media.j3d.PointLight;
 import javax.media.j3d.PositionInterpolator;
 import javax.media.j3d.RotationInterpolator;
 import javax.media.j3d.Shape3D;
+import javax.media.j3d.SpotLight;
 import javax.media.j3d.Switch;
 import javax.media.j3d.Transform3D;
 import javax.media.j3d.TransformGroup;
@@ -79,6 +81,10 @@ public class Click3D extends Applet implements MouseListener, ActionListener{
 	}
 	
 	AmbientLight aLight;
+	DirectionalLight dLight;
+	PointLight pLight;
+	SpotLight sLight;
+	SpotLight sLight2;
 	PickCanvas pc;
 	PositionInterpolator translator;
 	TransformInterpolator transformInterpolator;
@@ -257,10 +263,17 @@ public class Click3D extends Applet implements MouseListener, ActionListener{
 	    background.setApplicationBounds(bounds);
 	    root.addChild(background);
 	    
+	    // Ambient lighting
 	    aLight = new AmbientLight(true, new Color3f(Color.CYAN));
 	    aLight.setInfluencingBounds(bounds);
 	    aLight.setCapability(PointLight.ALLOW_STATE_WRITE | PointLight.ALLOW_STATE_READ);
 	    root.addChild(aLight);
+	    
+	    // Directional Lighting
+	    dLight = new DirectionalLight(new Color3f(Color.RED), new Vector3f(0f,1f, 0f));
+	    dLight.setCapability(PointLight.ALLOW_STATE_WRITE | PointLight.ALLOW_STATE_READ);
+	    dLight.setInfluencingBounds(bounds);
+	    root.addChild(dLight);
 	    
 	    Alpha alp = new Alpha(-1, 10000);
 	    rotator = new RotationInterpolator(alp, spin);
