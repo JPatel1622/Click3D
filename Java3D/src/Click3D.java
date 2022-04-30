@@ -109,11 +109,17 @@ public class Click3D extends Applet implements MouseListener, ActionListener{
 	public void startNewGameMainMenu() {
 		textArea = new JTextArea();
 		try {
-			Scanner input = new Scanner(new File("highscore.txt"));
-			while(input.hasNextInt()) {
-				highScore = input.nextInt();	
+			File file = new File("highscore.txt");
+			if(!file.exists()) {
+				highScore = 0;
+			} else{
+				Scanner input = new Scanner(file);
+				while(input.hasNextInt()) {
+					highScore = input.nextInt();	
+				}
+				input.close();
 			}
-			input.close();
+			
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
