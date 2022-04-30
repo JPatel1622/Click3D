@@ -107,6 +107,7 @@ public class Click3D extends Applet implements MouseListener, ActionListener{
 	JTextArea textArea;
 	double scale;
 	long elapsedTime;
+	BranchGroup root1;
 	
 	public void init() {
 		
@@ -247,9 +248,15 @@ public class Click3D extends Applet implements MouseListener, ActionListener{
 		
 	}
 
-	  private BranchGroup createSceneGraph() {
+	private BranchGroup createSceneGraph() {
+		root1 = new BranchGroup();
+		root1.setCapability(BranchGroup.ALLOW_DETACH);
+		root1.setCapability(BranchGroup.ALLOW_CHILDREN_WRITE);
+		  
 		root = new BranchGroup();
 		root.setCapability(BranchGroup.ALLOW_DETACH);
+		root.setCapability(BranchGroup.ALLOW_CHILDREN_WRITE);
+		
 	    spin = new TransformGroup();
 	    spin.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
 	    spin.setCapability(TransformGroup.ALLOW_TRANSFORM_READ);
@@ -300,8 +307,8 @@ public class Click3D extends Applet implements MouseListener, ActionListener{
 	    
 	    spin.addChild(rotator);
 	    
-
-	    return root;
+	    root1.addChild(root);
+	    return root1;
 	  }
 	  
 	  private static final int setInterval() {
@@ -371,16 +378,16 @@ public class Click3D extends Applet implements MouseListener, ActionListener{
 	  }
 	  
 	  public void newScene() {
-			translator.setEnable(true);
+			//translator.setEnable(true);
 			//Transform3D tr = new Transform3D();
 		    //tr.setTranslation(getRandomVector());
 		    //translator.setTransformAxis(tr);
 		    
-			translator.setStartPosition(10f);  
-		    translator.setEndPosition(10f);
+			//translator.setStartPosition(10f);  
+		    //translator.setEndPosition(10f);
+
 		    
-		    
-		    
+		    bg.removeChild(root1);
 			bg.removeChild(root);
 		    bg.addChild(createSceneGraph());
 		    
@@ -481,13 +488,13 @@ public class Click3D extends Applet implements MouseListener, ActionListener{
 		    spin.addChild(tg1);
 		    tg1.addChild(sphere);
 		    
-		    alpha = new Alpha();
+		    //alpha = new Alpha();
 		    bounds = new BoundingSphere();
 		    
-		    translator = new PositionInterpolator(alpha, spin);
-		    translator.setSchedulingBounds(bounds);
-		    translator.setEnable(false);
-		    tg1.addChild(translator);
+		    //translator = new PositionInterpolator(alpha, spin);
+		    //translator.setSchedulingBounds(bounds);
+		    //translator.setEnable(false);
+		   // tg1.addChild(translator);
 		    
 		    return sphere;
 	  }
@@ -542,5 +549,4 @@ public class Click3D extends Applet implements MouseListener, ActionListener{
 	}
 	
 }
-
 
