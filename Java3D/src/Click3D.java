@@ -22,13 +22,11 @@ import java.util.TimerTask;
 
 import javax.media.j3d.Alpha;
 import javax.media.j3d.AmbientLight;
-import javax.media.j3d.Appearance;
 import javax.media.j3d.Background;
 import javax.media.j3d.BoundingSphere;
 import javax.media.j3d.BranchGroup;
 import javax.media.j3d.Canvas3D;
 import javax.media.j3d.DirectionalLight;
-import javax.media.j3d.Material;
 import javax.media.j3d.Node;
 import javax.media.j3d.PointLight;
 import javax.media.j3d.PositionInterpolator;
@@ -38,7 +36,6 @@ import javax.media.j3d.SpotLight;
 import javax.media.j3d.Transform3D;
 import javax.media.j3d.TransformGroup;
 import javax.media.j3d.TransformInterpolator;
-import javax.media.j3d.TransparencyAttributes;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
@@ -298,8 +295,6 @@ public class Click3D extends Applet implements MouseListener, ActionListener {
 
 		if (result != null) {
 			node = result.getObject();
-			Shape3D s = (Shape3D) result.getNode(PickResult.SHAPE3D);
-
 			if (node instanceof Shape3D) {
 				newScene();
 				currentScore++;
@@ -319,10 +314,7 @@ public class Click3D extends Applet implements MouseListener, ActionListener {
 		su.getLocale().removeBranchGraph(bg);
 		bg = createSceneGraph();
 		pc = new PickCanvas(cv, bg);
-		pc.setMode(PickTool.GEOMETRY);
-		
 		su.addBranchGraph(bg);
-		
 		this.revalidate();
 
 	}
