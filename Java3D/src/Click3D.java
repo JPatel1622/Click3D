@@ -65,6 +65,7 @@ import javax.vecmath.Vector3f;
 
 import com.sun.j3d.utils.applet.MainFrame;
 import com.sun.j3d.utils.behaviors.mouse.MouseRotate;
+import com.sun.j3d.utils.geometry.Sphere;
 import com.sun.j3d.utils.picking.PickCanvas;
 import com.sun.j3d.utils.picking.PickResult;
 import com.sun.j3d.utils.picking.PickTool;
@@ -245,7 +246,12 @@ public class Click3D extends Applet implements MouseListener, ActionListener{
 	    root.addChild(spin);
 	    
 	    // generate shape
-	    generateShape();
+	    //generateShape();
+	    generateSphere();
+	    
+	    
+	    
+	    
 	    
 
 	    //light and background
@@ -334,7 +340,7 @@ public class Click3D extends Applet implements MouseListener, ActionListener{
 	  }
 	  
 	  public void newScene() {
-		  translator.setEnable(true);
+			translator.setEnable(true);
 			//Transform3D tr = new Transform3D();
 		    //tr.setTranslation(getRandomVector());
 		    //translator.setTransformAxis(tr);
@@ -342,10 +348,13 @@ public class Click3D extends Applet implements MouseListener, ActionListener{
 			translator.setStartPosition(10f);  
 		    translator.setEndPosition(10f);
 		    
+		    
+		    
 			bg.removeChild(root);
 		    bg.addChild(createSceneGraph());
 		    
 		    this.revalidate();
+		    
 	  }
 	  
 	  public Vector3f getRandomVector() {
@@ -382,7 +391,10 @@ public class Click3D extends Applet implements MouseListener, ActionListener{
 		    
 		    // spheres
 		    Shape3D shape = new Shape3D(new TestShape(), ap);
+		    //Shape3D shape = new Shape3D();
 		    shape.setCapability(Shape3D.ALLOW_PICKABLE_WRITE);
+		    
+		    
 		    
 
 		    Transform3D tr = new Transform3D();
@@ -408,11 +420,35 @@ public class Click3D extends Applet implements MouseListener, ActionListener{
 		    translator.setEnable(false);
 		    tg.addChild(translator);
 		    
+		    
 		    System.out.println(isClicked);
 		    
 		    return shape;
 	  }
 	  
+	  public Sphere generateSphere() {
+		  	Sphere sphere = new Sphere(1.0f, Sphere.GENERATE_NORMALS | Sphere.GENERATE_NORMALS_INWARD | Sphere.GENERATE_TEXTURE_COORDS, 60);
+		    sphere.setCapability(Sphere.ALLOW_PICKABLE_WRITE);
+		    System.out.println("sphere " + sphere);
+		    Transform3D spheretr = new Transform3D();
+		    
+		    spheretr.setScale(0.1);
+		    
+		    spheretr.setTranslation(getRandomVector());
+		    TransformGroup tg1 = new TransformGroup(spheretr);
+		    spin.addChild(tg1);
+		    tg1.addChild(sphere);
+		    
+		    alpha = new Alpha();
+		    bounds = new BoundingSphere();
+		    
+		    translator = new PositionInterpolator(alpha, spin);
+		    translator.setSchedulingBounds(bounds);
+		    translator.setEnable(false);
+		    tg1.addChild(translator);
+		    
+		    return sphere;
+	  }
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
