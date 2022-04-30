@@ -87,7 +87,11 @@ public class Click3D extends Applet implements MouseListener, ActionListener {
 	JTextArea textArea;
 	double scale;
 	long elapsedTime;
-	BranchGroup root1;
+	BranchGroup baseRoot;
+	final int totalGameTime = 60;
+	SimpleUniverse su;
+	GraphicsConfiguration gc;
+	Canvas3D cv;
 
 	public void init() {
 
@@ -140,8 +144,8 @@ public class Click3D extends Applet implements MouseListener, ActionListener {
 	public void startGame() {
 
 		// create canvas
-		GraphicsConfiguration gc = SimpleUniverse.getPreferredConfiguration();
-		Canvas3D cv = new Canvas3D(gc);
+		gc = SimpleUniverse.getPreferredConfiguration();
+		cv = new Canvas3D(gc);
 
 		// mouse behavior
 		cv.addMouseListener(this);
@@ -159,7 +163,7 @@ public class Click3D extends Applet implements MouseListener, ActionListener {
 
 		// add a timer
 		time = new JTextArea();
-		time.setText("Time: " + 60);
+		time.setText("Time: " + totalGameTime);
 		time.setFont(new Font("Serif", Font.BOLD, 30));
 		time.setBackground(Color.WHITE);
 		time.setEditable(false);
@@ -171,7 +175,7 @@ public class Click3D extends Applet implements MouseListener, ActionListener {
 		int delay = 1000;
 		int period = 1000;
 		timer = new Timer();
-		interval = 60;
+		interval = totalGameTime;
 		timer.scheduleAtFixedRate(new TimerTask() {
 			public void run() {
 				time.setText("Time: " + setInterval());
@@ -202,10 +206,11 @@ public class Click3D extends Applet implements MouseListener, ActionListener {
 		pc = new PickCanvas(cv, bg);
 		pc.setMode(PickTool.GEOMETRY);
 
-		SimpleUniverse su = new SimpleUniverse(cv);
+		su = new SimpleUniverse(cv);
 		su.getViewingPlatform().setNominalViewingTransform();
 		su.addBranchGraph(bg);
 
+		
 	}
 
 	public void stopGame() {
@@ -216,9 +221,7 @@ public class Click3D extends Applet implements MouseListener, ActionListener {
 	}
 
 	private BranchGroup createSceneGraph() {
-		root1 = new BranchGroup();
-		root1.setCapability(BranchGroup.ALLOW_DETACH);
-		root1.setCapability(BranchGroup.ALLOW_CHILDREN_WRITE);
+		
 
 		root = new BranchGroup();
 		root.setCapability(BranchGroup.ALLOW_DETACH);
@@ -278,8 +281,7 @@ public class Click3D extends Applet implements MouseListener, ActionListener {
 
 		spin.addChild(rotator);
 
-		root1.addChild(root);
-		return root1;
+		return root;
 	}
 
 	private static final int setInterval() {
@@ -313,11 +315,14 @@ public class Click3D extends Applet implements MouseListener, ActionListener {
 		}
 	}
 
-	public void newScene() {
-		bg.removeChild(root1);
-		bg.removeChild(root);
-		bg.addChild(createSceneGraph());
-
+	public void newScene() {	
+		su.getLocale().removeBranchGraph(bg);
+		bg = createSceneGraph();
+		pc = new PickCanvas(cv, bg);
+		pc.setMode(PickTool.GEOMETRY);
+		
+		su.addBranchGraph(bg);
+		
 		this.revalidate();
 
 	}
@@ -392,7 +397,6 @@ public class Click3D extends Applet implements MouseListener, ActionListener {
 		try {
 			FileWriter fwriter = new FileWriter("highscore.txt");
 			fwriter.write(new Integer(score).toString());
-			System.out.println(score);
 			fwriter.close();
 		} catch (IOException e) {
 			e.printStackTrace();
