@@ -100,6 +100,7 @@ public class Click3D extends Applet implements MouseListener, ActionListener{
 	static int interval;
 	JTextArea textArea;
 	double scale;
+	long elapsedTime;
 	
 	public void init() {
 		
@@ -203,6 +204,12 @@ public class Click3D extends Applet implements MouseListener, ActionListener{
 	    		//System.out.println(setInterval());
 	    		if(interval <= 0) {
 	    			stopGame();
+	    		}
+	    		
+	    		elapsedTime++;
+	    		if(elapsedTime >= 2) {
+	    			elapsedTime = 0;
+	    			newScene();
 	    		}
 	    	}
 	    }, delay, period);
@@ -314,10 +321,7 @@ public class Click3D extends Applet implements MouseListener, ActionListener{
 				
 				//get time and start the timer
 				isClicked = true;
-				if (isClicked) {
-
-						
-				}
+				elapsedTime = 0;
 				    
 				    //System.out.println(isClicked);
 					//s.setPickable(false);
@@ -509,6 +513,5 @@ public class Click3D extends Applet implements MouseListener, ActionListener{
 	}
 	
 }
-
 
 
