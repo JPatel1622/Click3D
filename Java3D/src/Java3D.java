@@ -155,7 +155,6 @@ public class Java3D extends Applet implements ActionListener, AppletStub{
 	}
 	
 	
-	@Override
 	public void actionPerformed(ActionEvent e) {
 		String cmd = e.getActionCommand();
 		if("Color".equals(cmd)) {
@@ -214,7 +213,6 @@ public class Java3D extends Applet implements ActionListener, AppletStub{
 		
 	}
 
-	@Override
 	public void appletResize(int width, int height) {
 		// TODO Auto-generated method stub
 		

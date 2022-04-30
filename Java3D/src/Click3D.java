@@ -250,18 +250,17 @@ public class Click3D extends Applet implements MouseListener, ActionListener{
 	    root.addChild(spin);
 	    
 	    // generate shape
-	    //generateShape();
 	    generateSphere();
-	    
-	    
-	    
-	    
-	    
 
 	    //light and background
 	    Background background = new Background(new Color3f(Color.white));
 	    background.setApplicationBounds(bounds);
 	    root.addChild(background);
+	    
+	    aLight = new AmbientLight(true, new Color3f(Color.CYAN));
+	    aLight.setInfluencingBounds(bounds);
+	    aLight.setCapability(PointLight.ALLOW_STATE_WRITE | PointLight.ALLOW_STATE_READ);
+	    root.addChild(aLight);
 	    
 	    Alpha alp = new Alpha(-1, 10000);
 	    rotator = new RotationInterpolator(alp, spin);
@@ -280,7 +279,6 @@ public class Click3D extends Applet implements MouseListener, ActionListener{
 		  return --interval;
 	  }
 
-	  @Override
 	  public void mouseClicked(MouseEvent e) {
 		pc.setShapeLocation(e);
 		PickResult result = pc.pickClosest();
@@ -436,13 +434,13 @@ public class Click3D extends Applet implements MouseListener, ActionListener{
 		    if(currentScore >= 0 && currentScore < 10) {
 		    	scale = 0.25;
 		    } else if (currentScore >= 10 && currentScore < 20) {
-		    	scale = 0.15;
+		    	scale = 0.20;
 		    } else if (currentScore >= 20 && currentScore < 30) {
-		    	scale = 0.1;
+		    	scale = 0.15;
 		    } else if (currentScore >= 30 && currentScore < 40) {
-		    	scale = 0.05;
+		    	scale = 0.10;
 		    } else {
-		    	scale = 0.01;
+		    	scale = 0.05;
 		    }
 		    spheretr.setScale(scale);
 		    
@@ -462,7 +460,7 @@ public class Click3D extends Applet implements MouseListener, ActionListener{
 		    return sphere;
 	  }
 	
-	@Override
+	
 	public void actionPerformed(ActionEvent e) {
 		String cmd = e.getActionCommand();
 		if("Start".equals(cmd)) {
@@ -488,25 +486,24 @@ public class Click3D extends Applet implements MouseListener, ActionListener{
 		}
 	}
 	
-	@Override
 	public void mousePressed(MouseEvent e) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
+	
 	public void mouseReleased(MouseEvent e) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
+	
 	public void mouseEntered(MouseEvent e) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
+	
 	public void mouseExited(MouseEvent e) {
 		// TODO Auto-generated method stub
 		
