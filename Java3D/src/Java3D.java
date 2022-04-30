@@ -9,6 +9,7 @@ import com.sun.j3d.utils.image.*;
 import com.sun.j3d.utils.applet.MainFrame;
 import com.sun.j3d.utils.behaviors.interpolators.*;
 import com.sun.j3d.utils.behaviors.mouse.MouseRotate;
+import com.sun.j3d.utils.behaviors.mouse.MouseTranslate;
 import com.sun.j3d.utils.behaviors.mouse.MouseZoom;
 
 import java.applet.*;
@@ -125,6 +126,11 @@ public class Java3D extends Applet implements ActionListener, AppletStub{
 	    MouseZoom mZoom = new MouseZoom(spin);
 	    mZoom.setSchedulingBounds(bounds);
 	    spin.addChild(mZoom);
+	    
+	    //mouse translation
+	    MouseTranslate mTranslator = new MouseTranslate(spin);
+	    mTranslator.setSchedulingBounds(bounds);
+	    spin.addChild(mTranslator);
 	    
 	    // color
 	    //color = new ColorInterpolator(alpha, material, new Color3f(1,1,1), shapeColor);
