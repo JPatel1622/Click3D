@@ -26,6 +26,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.awt.event.*;
+import java.util.Date;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.Timer;
@@ -99,6 +100,7 @@ public class Click3D extends Applet implements MouseListener, ActionListener{
 	static Timer timer;
 	static int interval;
 	JTextArea textArea;
+	long elapsedTime;
 	
 	
 	public void init() {
@@ -152,7 +154,7 @@ public class Click3D extends Applet implements MouseListener, ActionListener{
 	}
 	
 	public void startGame() {
-		
+		isClicked = false;
 		// create canvas
 	    GraphicsConfiguration gc = SimpleUniverse.getPreferredConfiguration();
 	    Canvas3D cv = new Canvas3D(gc);
@@ -182,7 +184,6 @@ public class Click3D extends Applet implements MouseListener, ActionListener{
 	    score.setBackground(Color.red);
 	    score.setEditable(false);
 	    panel.add(score);
-	    //add(score, BorderLayout.NORTH);
 	    
 	    // add a timer
 	    time = new JTextArea();
@@ -190,7 +191,6 @@ public class Click3D extends Applet implements MouseListener, ActionListener{
 	    time.setFont(new Font("Serif", Font.BOLD, 30));
 	    time.setBackground(Color.red);
 	    time.setEditable(false);
-	    //add(time, BorderLayout.NORTH);
 	    panel.add(time);
 	    
 	    add(panel, BorderLayout.NORTH);
@@ -207,6 +207,13 @@ public class Click3D extends Applet implements MouseListener, ActionListener{
 	    		if(interval <= 0) {
 	    			stopGame();
 	    		}
+	    		
+	    			elapsedTime++;
+	    			if(elapsedTime >= 2) {
+	    				elapsedTime = 0;
+	    				newScene();
+	    			}
+
 	    	}
 	    }, delay, period);
 		
@@ -316,11 +323,10 @@ public class Click3D extends Applet implements MouseListener, ActionListener{
 				}
 				
 				//get time and start the timer
-				isClicked = true;
-				if (isClicked) {
+				elapsedTime = 0;
 
-						
-				}
+				
+				
 				    
 				    //System.out.println(isClicked);
 					//s.setPickable(false);
