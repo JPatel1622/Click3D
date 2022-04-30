@@ -275,6 +275,25 @@ public class Click3D extends Applet implements MouseListener, ActionListener{
 	    dLight.setInfluencingBounds(bounds);
 	    root.addChild(dLight);
 	    
+	    // Point Light
+	    pLight = new PointLight(new Color3f(Color.YELLOW), new Point3f(-0.3f, 0.7f, 1f), new Point3f(1f, 0f, 0f));
+		pLight.setCapability(PointLight.ALLOW_STATE_WRITE | PointLight.ALLOW_STATE_READ);
+		pLight.setInfluencingBounds(bounds);
+		root.addChild(pLight);
+		
+		// Spot Light
+		sLight = new SpotLight(new Color3f(Color.BLACK), new Point3f(0.7f, 0.7f, 0.7f), new Point3f(1f, 0f, 0f),
+				new Vector3f(-0.7f, -0.7f, -0.7f), (float) (Math.PI / 6.0), 0f);
+		sLight.setCapability(PointLight.ALLOW_STATE_WRITE | PointLight.ALLOW_STATE_WRITE);
+		sLight.setInfluencingBounds(bounds);
+		root.addChild(sLight);
+		
+	//	sLight2 = new SpotLight(new Color3f(Color.CYAN), new Point3f(0.7f, 0.7f, -0.7f), new Point3f(1f, 0f, 0f),
+	//			new Vector3f(-0.7f, -0.7f, 0.7f), (float) (Math.PI / 12.0), 128f);
+	//	sLight2.setCapability(PointLight.ALLOW_STATE_WRITE | PointLight.ALLOW_STATE_WRITE);
+	//	sLight2.setInfluencingBounds(bounds);
+	//	root.addChild(sLight2);
+		
 	    Alpha alp = new Alpha(-1, 10000);
 	    rotator = new RotationInterpolator(alp, spin);
 	    rotator.setSchedulingBounds(bounds);
