@@ -26,7 +26,6 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.awt.event.*;
-import java.util.Date;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.Timer;
@@ -79,7 +78,7 @@ public class Click3D extends Applet implements MouseListener, ActionListener{
 		
 	}
 	
-	
+	AmbientLight aLight;
 	PickCanvas pc;
 	PositionInterpolator translator;
 	TransformInterpolator transformInterpolator;
@@ -100,8 +99,7 @@ public class Click3D extends Applet implements MouseListener, ActionListener{
 	static Timer timer;
 	static int interval;
 	JTextArea textArea;
-	long elapsedTime;
-	
+	double scale;
 	
 	public void init() {
 		
@@ -154,7 +152,7 @@ public class Click3D extends Applet implements MouseListener, ActionListener{
 	}
 	
 	public void startGame() {
-		isClicked = false;
+		
 		// create canvas
 	    GraphicsConfiguration gc = SimpleUniverse.getPreferredConfiguration();
 	    Canvas3D cv = new Canvas3D(gc);
@@ -172,25 +170,24 @@ public class Click3D extends Applet implements MouseListener, ActionListener{
 //	    	}
 //	    });
 	    
-	    
-	    
-	    
 	    setLayout(new BorderLayout());
 	    Panel panel = new Panel(new GridLayout(2,1));
 	    score = new JTextArea();
 	    currentScore = 0;
 	    score.setText("Score: " + currentScore);
 	    score.setFont(new Font("Serif", Font.BOLD, 30));
-	    score.setBackground(Color.red);
+	    score.setBackground(Color.WHITE);
 	    score.setEditable(false);
 	    panel.add(score);
+	    //add(score, BorderLayout.NORTH);
 	    
 	    // add a timer
 	    time = new JTextArea();
-	    time.setText("Time: " + 30);
+	    time.setText("Time: " + 60);
 	    time.setFont(new Font("Serif", Font.BOLD, 30));
-	    time.setBackground(Color.red);
+	    time.setBackground(Color.WHITE);
 	    time.setEditable(false);
+	    //add(time, BorderLayout.NORTH);
 	    panel.add(time);
 	    
 	    add(panel, BorderLayout.NORTH);
@@ -199,7 +196,7 @@ public class Click3D extends Applet implements MouseListener, ActionListener{
 	    int delay = 1000;
 	    int period = 1000;
 	    timer = new Timer();
-	    interval = 30;
+	    interval = 60;
 	    timer.scheduleAtFixedRate(new TimerTask() {
 	    	public void run() {
 	    		time.setText("Time: " + setInterval());
@@ -207,13 +204,6 @@ public class Click3D extends Applet implements MouseListener, ActionListener{
 	    		if(interval <= 0) {
 	    			stopGame();
 	    		}
-	    		
-	    			elapsedTime++;
-	    			if(elapsedTime >= 2) {
-	    				elapsedTime = 0;
-	    				newScene();
-	    			}
-
 	    	}
 	    }, delay, period);
 		
@@ -262,7 +252,7 @@ public class Click3D extends Applet implements MouseListener, ActionListener{
 	    
 
 	    //light and background
-	    Background background = new Background(new Color3f(Color.red));
+	    Background background = new Background(new Color3f(Color.white));
 	    background.setApplicationBounds(bounds);
 	    root.addChild(background);
 	    
@@ -323,10 +313,11 @@ public class Click3D extends Applet implements MouseListener, ActionListener{
 				}
 				
 				//get time and start the timer
-				elapsedTime = 0;
+				isClicked = true;
+				if (isClicked) {
 
-				
-				
+						
+				}
 				    
 				    //System.out.println(isClicked);
 					//s.setPickable(false);
@@ -397,7 +388,6 @@ public class Click3D extends Applet implements MouseListener, ActionListener{
 		    
 		    // spheres
 		    Shape3D shape = new Shape3D(new TestShape(), ap);
-		    //Shape3D shape = new Shape3D();
 		    shape.setCapability(Shape3D.ALLOW_PICKABLE_WRITE);
 		    
 		    
@@ -433,12 +423,24 @@ public class Click3D extends Applet implements MouseListener, ActionListener{
 	  }
 	  
 	  public Sphere generateSphere() {
-		  	Sphere sphere = new Sphere(1.0f, Sphere.GENERATE_NORMALS | Sphere.GENERATE_NORMALS_INWARD | Sphere.GENERATE_TEXTURE_COORDS, 60);
+		  	Sphere sphere = new Sphere(1.0f, Sphere.GENERATE_NORMALS | Sphere.GENERATE_NORMALS_INWARD | Sphere.GENERATE_TEXTURE_COORDS, 120);
 		    sphere.setCapability(Sphere.ALLOW_PICKABLE_WRITE);
 		    System.out.println("sphere " + sphere);
 		    Transform3D spheretr = new Transform3D();
 		    
-		    spheretr.setScale(0.1);
+		    // Change scale of sphere based on surrentScore
+		    if(currentScore >= 0 && currentScore < 10) {
+		    	scale = 0.25;
+		    } else if (currentScore >= 10 && currentScore < 20) {
+		    	scale = 0.15;
+		    } else if (currentScore >= 20 && currentScore < 30) {
+		    	scale = 0.1;
+		    } else if (currentScore >= 30 && currentScore < 40) {
+		    	scale = 0.05;
+		    } else {
+		    	scale = 0.01;
+		    }
+		    spheretr.setScale(scale);
 		    
 		    spheretr.setTranslation(getRandomVector());
 		    TransformGroup tg1 = new TransformGroup(spheretr);
@@ -507,5 +509,6 @@ public class Click3D extends Applet implements MouseListener, ActionListener{
 	}
 	
 }
+
 
 
