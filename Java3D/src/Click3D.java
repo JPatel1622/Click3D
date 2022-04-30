@@ -183,6 +183,10 @@ public class Click3D extends Applet implements MouseListener, ActionListener {
 				if (elapsedTime >= 2) {
 					elapsedTime = 0;
 					newScene();
+					if(currentScore > 0) {
+						currentScore--;
+						score.setText("Score: " + currentScore);
+					}
 				}
 			}
 		}, delay, period);
