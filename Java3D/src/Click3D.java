@@ -5,17 +5,31 @@ import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GraphicsConfiguration;
+import java.awt.GridLayout;
 import java.awt.Panel;
 import java.awt.Point;
+import java.awt.TextArea;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.io.Writer;
 import java.awt.event.*;
 import java.util.Random;
+import java.util.Scanner;
 import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 import javax.media.j3d.Alpha;
@@ -39,6 +53,9 @@ import javax.media.j3d.TransformGroup;
 import javax.media.j3d.TransformInterpolator;
 import javax.media.j3d.TransparencyAttributes;
 import javax.media.j3d.TransparencyInterpolator;
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.vecmath.AxisAngle4d;
 import javax.vecmath.Color3f;
 import javax.vecmath.Point3d;
@@ -70,24 +87,62 @@ public class Click3D extends Applet implements MouseListener, ActionListener{
 	BoundingSphere bounds;
 	Alpha alpha;
 	BranchGroup bg;
-	Button startButton;
+	JButton startButton;
 	boolean isClicked;
-	long startTime;
-	Timer timer;
-	Thread runner;
+	JPanel panel;
+	JTextArea score;
+	JTextArea time;
+	int currentScore;
+	int highScore;
+	PrintWriter writer;
+	static Timer timer;
+	static int interval;
+	JTextArea textArea;
+	
 	
 	public void init() {
-		CardLayout cardLayout = new CardLayout();
-		setLayout(cardLayout);
 		
-
-		startButton = new Button("Start");
-		startButton.setBounds(50,100, this.getWidth()/2, this.getHeight()/2);
-		add(startButton);
-		
-	    startButton.addActionListener(this);
+		startNewGameMainMenu();
 	    
 	  }
+	
+	public void startNewGameMainMenu() {
+		textArea = new JTextArea();
+		try {
+			Scanner input = new Scanner(new File("highscore.txt"));
+			while(input.hasNextInt()) {
+				highScore = input.nextInt();	
+			}
+			input.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+		textArea.setText("Highscore: " + highScore);
+		textArea.setFont(new Font("Serif", Font.BOLD, 30));
+		textArea.setBackground(Color.white);
+		textArea.setEditable(false);
+		
+		
+		GridLayout gridLayout = new GridLayout(2,1);
+		panel = new JPanel();
+		panel.setLayout(gridLayout);
+		panel.setPreferredSize(new Dimension(200,200));
+		
+		startButton = new JButton("Start");
+		startButton.setFont(new Font("Arial", Font.PLAIN, 30));
+		startButton.setBackground(Color.LIGHT_GRAY);
+		
+		panel.add(startButton);
+		panel.add(textArea);
+		panel.setBackground(Color.white);
+		
+		add(panel);
+		this.setBackground(Color.white);
+		
+		
+	    startButton.addActionListener(this);
+	}
 	
 	public void startGame() {
 		
@@ -112,6 +167,42 @@ public class Click3D extends Applet implements MouseListener, ActionListener{
 	    
 	    
 	    setLayout(new BorderLayout());
+	    Panel panel = new Panel(new GridLayout(2,1));
+	    score = new JTextArea();
+	    currentScore = 0;
+	    score.setText("Score: " + currentScore);
+	    score.setFont(new Font("Serif", Font.BOLD, 30));
+	    score.setBackground(Color.red);
+	    score.setEditable(false);
+	    panel.add(score);
+	    //add(score, BorderLayout.NORTH);
+	    
+	    // add a timer
+	    time = new JTextArea();
+	    time.setText("Time: " + 30);
+	    time.setFont(new Font("Serif", Font.BOLD, 30));
+	    time.setBackground(Color.red);
+	    time.setEditable(false);
+	    //add(time, BorderLayout.NORTH);
+	    panel.add(time);
+	    
+	    add(panel, BorderLayout.NORTH);
+	    
+	    
+	    int delay = 1000;
+	    int period = 1000;
+	    timer = new Timer();
+	    interval = 30;
+	    timer.scheduleAtFixedRate(new TimerTask() {
+	    	public void run() {
+	    		time.setText("Time: " + setInterval());
+	    		//System.out.println(setInterval());
+	    		if(interval <= 0) {
+	    			stopGame();
+	    		}
+	    	}
+	    }, delay, period);
+		
 	    add(cv, BorderLayout.CENTER);
 	    bg = createSceneGraph();
 	    bg.setCapability(BranchGroup.ALLOW_CHILDREN_READ);
@@ -127,6 +218,16 @@ public class Click3D extends Applet implements MouseListener, ActionListener{
 	    su.getViewingPlatform().setNominalViewingTransform();
 	    su.addBranchGraph(bg);
 	    
+	    
+	}
+	
+	public void stopGame() {
+		this.removeAll();
+		//this.repaint();
+		startNewGameMainMenu();
+		this.revalidate();
+		
+		
 	}
 
 	  private BranchGroup createSceneGraph() {
@@ -137,9 +238,8 @@ public class Click3D extends Applet implements MouseListener, ActionListener{
 	    spin.setCapability(TransformGroup.ALLOW_TRANSFORM_READ);
 	    root.addChild(spin);
 	    
-	    // generate shapes
+	    // generate shape
 	    generateShape();
-	   // generateShape();
 	    
 
 	    //light and background
@@ -147,10 +247,9 @@ public class Click3D extends Applet implements MouseListener, ActionListener{
 	    background.setApplicationBounds(bounds);
 	    root.addChild(background);
 	    
-	    Alpha alp = new Alpha(-1, 6000);
+	    Alpha alp = new Alpha(-1, 10000);
 	    rotator = new RotationInterpolator(alp, spin);
-	    BoundingSphere b = new BoundingSphere(new Point3d(0,1,0), 0.1);
-	    rotator.setSchedulingBounds(b);
+	    rotator.setSchedulingBounds(bounds);
 	    
 	    spin.addChild(rotator);
 	    
@@ -158,7 +257,12 @@ public class Click3D extends Applet implements MouseListener, ActionListener{
 	    return root;
 	  }
 	  
-
+	  private static final int setInterval() {
+		  if (interval == 1) {
+			  timer.cancel();
+		  }
+		  return --interval;
+	  }
 
 	  @Override
 	  public void mouseClicked(MouseEvent e) {
@@ -193,6 +297,11 @@ public class Click3D extends Applet implements MouseListener, ActionListener{
 //					bg.removeChild(root);
 //				    bg.addChild(createSceneGraph());
 				newScene();
+				currentScore++;
+				score.setText("Score: " + currentScore);
+				if(currentScore > highScore) {
+					updateFile(currentScore);
+				}
 				
 				//get time and start the timer
 				isClicked = true;
@@ -304,12 +413,25 @@ public class Click3D extends Applet implements MouseListener, ActionListener{
 		String cmd = e.getActionCommand();
 		if("Start".equals(cmd)) {
 			startButton.setVisible(false);
+			panel.setVisible(false);
 			startGame();
 			this.revalidate();
 		}
 		
 		
 
+	}
+	
+	// create highscore file
+	public void updateFile(int score) {
+		try {
+			FileWriter fwriter = new FileWriter("highscore.txt");
+			fwriter.write(new Integer(score).toString());
+			System.out.println(score);
+			fwriter.close();
+		}catch(IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	@Override
