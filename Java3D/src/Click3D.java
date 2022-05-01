@@ -218,7 +218,7 @@ public class Click3D extends Applet implements MouseListener, ActionListener {
 		root.addChild(background);
 
 		// Ambient lighting
-		AmbientLight aLight = new AmbientLight(true, new Color3f(Color.CYAN));
+		AmbientLight aLight = new AmbientLight(true, new Color3f(getRandom(value), getRandom(value), getRandom(value)));
 
 		aLight = new AmbientLight(true, new Color3f(getRandom(value), getRandom(value), getRandom(value)));
 
@@ -227,8 +227,8 @@ public class Click3D extends Applet implements MouseListener, ActionListener {
 		root.addChild(aLight);
 
 		// Directional Lighting
-
-		DirectionalLight dLight = new DirectionalLight(new Color3f(Color.RED), new Vector3f(0f, 1f, 0f));
+		DirectionalLight dLight = new DirectionalLight(new Color3f(getRandom(value), getRandom(value), getRandom(value)), 
+				new Vector3f(getRandom(value), getRandom(value), getRandom(value)));
 
 		dLight = new DirectionalLight(new Color3f(getRandom(value), getRandom(value), getRandom(value)),
 				new Vector3f(getRandom(value), getRandom(value), getRandom(value)));
@@ -238,8 +238,9 @@ public class Click3D extends Applet implements MouseListener, ActionListener {
 		root.addChild(dLight);
 
 		// Point Light
-
-		PointLight pLight = new PointLight(new Color3f(Color.YELLOW), new Point3f(-0.3f, 0.7f, 1f), new Point3f(1f, 0f, 0f));
+		PointLight pLight = new PointLight(new Color3f(getRandom(value), getRandom(value), getRandom(value)), 
+				new Point3f(getRandom(value), getRandom(value), getRandom(value)), 
+				new Point3f(getRandom(value), getRandom(value), getRandom(value)));
 
 		pLight = new PointLight(new Color3f(getRandom(value), getRandom(value), getRandom(value)),
 				new Point3f(getRandom(value), getRandom(value), getRandom(value)),
@@ -257,9 +258,10 @@ public class Click3D extends Applet implements MouseListener, ActionListener {
 		root.addChild(pLight);
 
 		// Spot Light
-
-		SpotLight sLight = new SpotLight(new Color3f(Color.BLACK), new Point3f(0.7f, 0.7f, 0.7f), new Point3f(1f, 0f, 0f),
-				new Vector3f(-0.7f, -0.7f, -0.7f), (float) (Math.PI / 6.0), 0f);
+		SpotLight sLight = new SpotLight(new Color3f(getRandom(value), getRandom(value), getRandom(value)), 
+				new Point3f(getRandom(value), getRandom(value), getRandom(value)), 
+				new Point3f(getRandom(value), getRandom(value), getRandom(value)),
+				new Vector3f(getRandom(value), getRandom(value), getRandom(value)), (float) (Math.PI / 6.0), 0f);
 
 		sLight = new SpotLight(new Color3f(getRandom(value), getRandom(value), getRandom(value)),
 				new Point3f(getRandom(value), getRandom(value), getRandom(value)),
