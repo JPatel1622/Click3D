@@ -54,7 +54,6 @@ public class Click3D extends Applet implements MouseListener, ActionListener {
 
 	public static void main(String[] args) {
 		new MainFrame(new Click3D(), 800, 600);
-
 	}
 
 	AmbientLight aLight;
@@ -89,11 +88,10 @@ public class Click3D extends Applet implements MouseListener, ActionListener {
 	SimpleUniverse su;
 	GraphicsConfiguration gc;
 	Canvas3D cv;
+	float value;
 
 	public void init() {
-
 		startNewGameMainMenu();
-
 	}
 
 	public void startNewGameMainMenu() {
@@ -179,12 +177,11 @@ public class Click3D extends Applet implements MouseListener, ActionListener {
 				if (interval <= 0) {
 					stopGame();
 				}
-
 				elapsedTime++;
 				if (elapsedTime >= 2) {
 					elapsedTime = 0;
 					newScene();
-					if(currentScore > 0) {
+					if (currentScore > 0) {
 						currentScore--;
 						score.setText("Score: " + currentScore);
 					}
@@ -206,20 +203,15 @@ public class Click3D extends Applet implements MouseListener, ActionListener {
 		su = new SimpleUniverse(cv);
 		su.getViewingPlatform().setNominalViewingTransform();
 		su.addBranchGraph(bg);
-
-		
 	}
 
 	public void stopGame() {
 		this.removeAll();
 		startNewGameMainMenu();
 		this.revalidate();
-
 	}
 
 	private BranchGroup createSceneGraph() {
-		
-
 		root = new BranchGroup();
 		root.setCapability(BranchGroup.ALLOW_DETACH);
 		root.setCapability(BranchGroup.ALLOW_CHILDREN_WRITE);
@@ -229,56 +221,75 @@ public class Click3D extends Applet implements MouseListener, ActionListener {
 		spin.setCapability(TransformGroup.ALLOW_TRANSFORM_READ);
 		root.addChild(spin);
 
-		// generate shape
 		generateSphere();
 
 		bounds = new BoundingSphere();
-		
+
 		// light and background
-		Background background = new Background(new Color3f(Color.white));
+		Background background = new Background(new Color3f(Color.WHITE));
 		background.setApplicationBounds(bounds);
 		root.addChild(background);
 
 		// Ambient lighting
-		aLight = new AmbientLight(true, new Color3f(Color.CYAN));
+		aLight = new AmbientLight(true, new Color3f(getRandom(value), getRandom(value), getRandom(value)));
 		aLight.setInfluencingBounds(bounds);
 		aLight.setCapability(PointLight.ALLOW_STATE_WRITE | PointLight.ALLOW_STATE_READ);
 		root.addChild(aLight);
 
 		// Directional Lighting
-		dLight = new DirectionalLight(new Color3f(Color.RED), new Vector3f(0f, 1f, 0f));
+		dLight = new DirectionalLight(new Color3f(getRandom(value), getRandom(value), getRandom(value)),
+				new Vector3f(getRandom(value), getRandom(value), getRandom(value)));
 		dLight.setCapability(PointLight.ALLOW_STATE_WRITE | PointLight.ALLOW_STATE_READ);
 		dLight.setInfluencingBounds(bounds);
 		root.addChild(dLight);
 
 		// Point Light
-		pLight = new PointLight(new Color3f(Color.YELLOW), new Point3f(-0.3f, 0.7f, 1f), new Point3f(1f, 0f, 0f));
+		pLight = new PointLight(new Color3f(getRandom(value), getRandom(value), getRandom(value)),
+				new Point3f(getRandom(value), getRandom(value), getRandom(value)),
+				new Point3f(getRandom(value), getRandom(value), getRandom(value)));
 		pLight.setCapability(PointLight.ALLOW_STATE_WRITE | PointLight.ALLOW_STATE_READ);
 		pLight.setInfluencingBounds(bounds);
 		root.addChild(pLight);
 
+		// Point Light is always white, but points at random
+		pLight = new PointLight(new Color3f(Color.white),
+				new Point3f(getRandom(value), getRandom(value), getRandom(value)),
+				new Point3f(getRandom(value), getRandom(value), getRandom(value)));
+		pLight.setCapability(PointLight.ALLOW_STATE_WRITE | PointLight.ALLOW_STATE_WRITE);
+		pLight.setInfluencingBounds(bounds);
+		root.addChild(pLight);
+
 		// Spot Light
-		sLight = new SpotLight(new Color3f(Color.BLACK), new Point3f(0.7f, 0.7f, 0.7f), new Point3f(1f, 0f, 0f),
-				new Vector3f(-0.7f, -0.7f, -0.7f), (float) (Math.PI / 6.0), 0f);
+		sLight = new SpotLight(new Color3f(getRandom(value), getRandom(value), getRandom(value)),
+				new Point3f(getRandom(value), getRandom(value), getRandom(value)),
+				new Point3f(getRandom(value), getRandom(value), getRandom(value)),
+				new Vector3f(getRandom(value), getRandom(value), getRandom(value)), (float) (Math.PI / 6.0), 0f);
 		sLight.setCapability(PointLight.ALLOW_STATE_WRITE | PointLight.ALLOW_STATE_WRITE);
 		sLight.setInfluencingBounds(bounds);
 		root.addChild(sLight);
 
-		// sLight2 = new SpotLight(new Color3f(Color.CYAN), new Point3f(0.7f, 0.7f,
-		// -0.7f), new Point3f(1f, 0f, 0f),
-		// new Vector3f(-0.7f, -0.7f, 0.7f), (float) (Math.PI / 12.0), 128f);
-		// sLight2.setCapability(PointLight.ALLOW_STATE_WRITE |
-		// PointLight.ALLOW_STATE_WRITE);
-		// sLight2.setInfluencingBounds(bounds);
-		// root.addChild(sLight2);
+		sLight2 = new SpotLight(new Color3f(getRandom(value), getRandom(value), getRandom(value)),
+				new Point3f(getRandom(value), getRandom(value), getRandom(value)),
+				new Point3f(getRandom(value), getRandom(value), getRandom(value)),
+				new Vector3f(getRandom(value), getRandom(value), getRandom(value)), (float) (Math.PI / 12.0), 128f);
+		sLight2.setCapability(PointLight.ALLOW_STATE_WRITE | PointLight.ALLOW_STATE_WRITE);
+		sLight2.setInfluencingBounds(bounds);
+		root.addChild(sLight2);
 
 		Alpha alp = new Alpha(-1, 10000);
 		rotator = new RotationInterpolator(alp, spin);
 		rotator.setSchedulingBounds(bounds);
-
 		spin.addChild(rotator);
 
 		return root;
+	}
+
+	// returns a random float value
+	public float getRandom(float value) {
+		Random random = new Random();
+		value = random.nextFloat();
+
+		return value;
 	}
 
 	private static final int setInterval() {
@@ -310,13 +321,12 @@ public class Click3D extends Applet implements MouseListener, ActionListener {
 		}
 	}
 
-	public void newScene() {	
+	public void newScene() {
 		su.getLocale().removeBranchGraph(bg);
 		bg = createSceneGraph();
 		pc = new PickCanvas(cv, bg);
 		su.addBranchGraph(bg);
 		this.revalidate();
-
 	}
 
 	public Vector3f getRandomVector() {
@@ -361,14 +371,12 @@ public class Click3D extends Applet implements MouseListener, ActionListener {
 		} else {
 			scale = 0.05;
 		}
-		spheretr.setScale(scale);
 
+		spheretr.setScale(scale);
 		spheretr.setTranslation(getRandomVector());
 		TransformGroup tg1 = new TransformGroup(spheretr);
 		spin.addChild(tg1);
 		tg1.addChild(sphere);
-
-		
 
 		return sphere;
 	}
@@ -381,7 +389,6 @@ public class Click3D extends Applet implements MouseListener, ActionListener {
 			startGame();
 			this.revalidate();
 		}
-
 	}
 
 	// create highscore file
@@ -396,22 +403,18 @@ public class Click3D extends Applet implements MouseListener, ActionListener {
 	}
 
 	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
 
 	}
 
 	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
 
 	}
 
 	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
 
 	}
 
 	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
 
 	}
 
